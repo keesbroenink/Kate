@@ -29,6 +29,7 @@ See build.gradle.kts
 - Spring Boot 
 - Spring Boot Web (DeferredResult)
 - Spring Kafka
+- Kafka
 
 Also defined but only used in the examples
 - JUnit
