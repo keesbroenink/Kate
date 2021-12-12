@@ -1,0 +1,30 @@
+kate.producer.bootstrap-servers: undefined
+kate.consumer.bootstrap-servers: undefined
+
+kate.default-request-topic  : KateBulletinBoardRequests
+kate.default-response-topic : KateBulletinBoardResponses
+kate.default-event-topic    : KateBulletinBoardEvents
+kate.default-error-topic    : KateBulletinBoardErrors
+
+kate.producer.request-topic : ${kate.default-request-topic}
+kate.producer.response-topic: ${kate.default-response-topic}
+kate.producer.event-topic   : ${kate.default-event-topic}
+kate.producer.error-topic   : ${kate.default-error-topic}
+
+kate.consumer.request.enabled  : true
+kate.consumer.request-topics   : ${kate.default-request-topic}
+kate.consumer.request-group-id : kate-request-consumer
+
+kate.consumer.response.enabled : true
+kate.consumer.response-topics  : ${kate.default-response-topic}
+kate.consumer.response-group-id: kate-response-consumer
+
+kate.consumer.event.enabled    : true
+kate.consumer.event-topics     : ${kate.default-event-topic}
+kate.consumer.event-group-id   : kate-event-consumer
+
+#could be any SQL database
+spring.datasource.url: jdbc:h2:mem:testdb
+spring.datasource.driverClassName: org.h2.Driver
+spring.datasource.username: sa
+spring.jpa.hibernate.ddl-auto: create
