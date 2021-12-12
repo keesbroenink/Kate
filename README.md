@@ -1,4 +1,4 @@
-# KATE, a small framework for event driven request/ response with Kafka
+#KATE, a small framework for event driven request/ response with Kafka
 
 ## Copyright
 The KAfka requesT/ response framework with Events is developed by Kees Broenink in 2021.
@@ -19,6 +19,34 @@ response to the original webclient.
 
 ## Reactive Manifesto
 
+TODO
+
+## Technical dependencies
+
+See build.gradle.kts
+
+- JVM Java 8 or newer
+- Spring Boot 
+- Spring Boot Web (DeferredResult)
+- Spring Kafka
+
+Also defined but only used in the examples
+- JUnit
+- Spring Boot dev tools
+- Spring Boot starter test
+- Spring Boot Actuator
+- Spring Boot data JPA
+- Springdoc open api
+- H2
+
 ## Events
 
+TODO
+
 ## Errors
+
+TODO
+
+## Examples
+
+TODO
