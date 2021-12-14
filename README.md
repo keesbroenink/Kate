@@ -33,7 +33,11 @@ response to the original webclient.
 
 ## Reactive Manifesto
 
-TODO
+The Reactive Manifesto https://www.reactivemanifesto.org/ sets the stage for modern software architectures to support high performant reliable systems with many users.
+The Kate framework fits in here very well. It addresses the Message Driven  principle because now even request and responses are real asynchronous messages.
+Kate uses Kafka. Kafka is a robust reliable message system that scales very well. If you combine this with microservices on e.g. Kubernetes
+the whole server landscape will become Responsive, Resilient and Elastic. When a microservice (Kafka consumer) crashes another instance will pick up the message again
+because messages will stay on Kafka. Only on successful processing the consumer will commit the new read offset.
 
 ## Technical dependencies
 
