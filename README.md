@@ -2,9 +2,23 @@
 
 ## Copyright
 The KAfka requesT/ response framework with Events is developed by Kees Broenink in 2021.
-It can be freely used but cannot be adjusted or forked.
+It can be freely used but cannot be adjusted or forked. Contact me for more information keesbroenink@gmail.com
 
 ## Basic concepts event driven request/ response
+Most webapplications talk to the server using HTTP which is a synchronous protocol. Also a lot of webservices (microservices)
+talk to each other using HTTP. Kate will help you to change this and make your software landscape truly asynchronous.
+
+The current approaches we see most of the time are a combination of request-response and event driven where the latter is
+used to 'let the world know that something has happened'. What is missing here is the combination of request-response with
+an asynchronous message communication system. It is really hard to build software systems that only react on events to do some work. 
+We always have a need for commands and queries that should be answered. Kate will provide this missing part.
+
+The architecture of Kate is very straightforward. Requests are delivered to a generic topic (request bulletin board). Back-end services
+will subscribe to the topic and (enabled by Kate) check if they can answer the request. If so a request handling callback is called
+and the 3Gl developer can write the code to answer the request and (enabled by Kate) post the answer to another generic topic (response bulletin board).
+The back-end service that submitted the original request will write a callback (enabled by Kate) to receive the answer. If the
+request originated from a webclient the answer will then be delivered to the client.
+
 The framework tries to impact your microservice code to the very minimum. When using a software architecture where the 
 domain layer is central and technology-agnostic (e.g. onion or hexagonal) you are able to use Kate
 without many changes. The main change will be that the business services will deliver their answers not by returning
