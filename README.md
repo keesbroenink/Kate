@@ -34,9 +34,9 @@ response to the original webclient.
 ## Reactive Manifesto
 
 The Reactive Manifesto https://www.reactivemanifesto.org/ sets the stage for modern software architectures to support high performant reliable systems with many users.
-The Kate framework fits in here very well. It addresses the Message Driven  principle because now even request and responses are real asynchronous messages.
-Kate uses Kafka. Kafka is a robust reliable message system that scales very well. If you combine this with microservices on e.g. Kubernetes
-the whole server landscape will become Responsive, Resilient and Elastic. When a microservice (Kafka consumer) crashes another instance will pick up the message again
+The Kate framework fits in here very well. It addresses the Message Driven principle because request and responses will be real asynchronous messages.
+Kate uses Kafka. Kafka is a robust reliable message system that scales very well. If you combine this with microservices on e.g. Kubernetes,
+the whole server landscape will become Responsive, Resilient and Elastic. When a microservice (Kafka consumer) crashes, another instance will pick up the message again
 because messages will stay on Kafka. Only on successful processing the consumer will commit the new read offset.
 
 ## Technical dependencies
@@ -54,18 +54,18 @@ Also defined but only used in the examples
 - Spring Boot dev tools
 - Spring Boot starter test
 - Spring Boot Actuator
-- Spring Boot data JPA
 - Springdoc open api
 - H2
 
 ## Events
 
-TODO
+An alternative to request/ response is to notify that something has happened. With Kate you can publish an Event message on a generic topic (event bulletin board).
+Microservices can write a callback handler (enabled by Kate) to react on messages of a certain type.
 
 ## Errors
 
-TODO
+Kate supports notifying error events. It works the same as Kate events but uses a different generic top (error bulletin board).
 
 ## Examples
 
-TODO
+In progress: examples as separate module
