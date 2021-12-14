@@ -43,23 +43,16 @@ class KateKafkaResponseListener(private val kateRepo: KateReadRepository,
             // RESPONSE, first deserialize to kate framework fields
             val bareResponse = deserializer.readValue(cr.value(), KateResponse::class.java)
             // then deserialize body
-            var callback = callbackMap[bareResponse.responseBodyType]
+            val callback = callbackMap[bareResponse.responseBodyType]
             if (callback != null) {
                 val kateResponse = convertJsonToKateResponse(cr.value())
-                if (kateResponse != null) {
-                    KateKafkaRequestListener.LOGGER.info("RESPONSE RECEIVED $kateResponse")
-                    val kateRequest = kateRepo.getRequest(kateResponse.requestId)
-                    if (kateRequest == null) {
-                        LOGGER.debug("Request ${kateResponse.requestId} not found for response ${kateResponse.id}")
-                    } else {
-                        // if we don't have the parent request it doesn't make sense to deliver responses
-                        if (kateRequest.parentRequestId != null && kateRepo.getRequest(kateRequest.parentRequestId) == null) {
-                            LOGGER.debug("Parent request ${kateRequest.parentRequestId} not found for request ${kateRequest.id} belonging to ${kateResponse.requestId}")
-                        } else {
-                            callback.kateInvokeInternal(kateResponse, kateRequest)
-                        }
-                    }
+                KateKafkaRequestListener.LOGGER.info("RESPONSE RECEIVED $kateResponse")
+                val kateRequest = kateRepo.getRequest(kateResponse.requestId)
+                // if we don't have the parent request it doesn't make sense to deliver responses
+                if (kateRequest.parentRequestId != null) {
+                    kateRepo.getRequest(kateRequest.parentRequestId)//throws exception if not found
                 }
+                callback.kateInvokeInternal(kateResponse, kateRequest)
             }
         } catch (e: Exception) {
             LOGGER.error("=====> error ${e.message}")

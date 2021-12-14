@@ -41,13 +41,11 @@ class KateKafkaEventListener(val kateRequestReceivedCallbacks: List<KateEventRec
             // EVENT, first deserialize to kate framework fields
             val bareEvent = deserializer.readValue(cr.value(), KateEvent::class.java)
             // then deserialize body
-            var callback = callbackMap[bareEvent.eventBodyType]
+            val callback = callbackMap[bareEvent.eventBodyType]
             if (callback != null) {
                 val kateEvent = convertJsonToKateEvent(cr.value())
-                if (kateEvent != null) {
-                    LOGGER.info("EVENT RECEIVED $kateEvent")
-                    callback.kateInvokeInternal(kateEvent)
-                }
+                LOGGER.info("EVENT RECEIVED $kateEvent")
+                callback.kateInvokeInternal(kateEvent)
             }
         } catch (e: Exception) {
            LOGGER.error("=====> error ${e.message}")

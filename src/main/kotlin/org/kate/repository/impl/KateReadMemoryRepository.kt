@@ -20,7 +20,7 @@ class KateReadMemoryRepository(private val katePrivateRepository: KatePrivateRea
     }
 
     override fun <T: KateRequestBody> getRequestBody(requestId: String, requiredClass: Class<T>): T? {
-        val request = getRequest(requestId) ?: return null
+        val request = getRequest(requestId)
         if (request.requestBody != null && request.requestBody!!::class.java == requiredClass) {
             return request.requestBody as T
         }

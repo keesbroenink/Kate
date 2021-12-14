@@ -49,7 +49,7 @@ See build.gradle.kts
 - Spring Kafka
 - Kafka
 
-Also defined but only used in the examples
+Used in the examples
 - JUnit
 - Spring Boot dev tools
 - Spring Boot starter test

@@ -42,14 +42,12 @@ class KateKafkaRequestListener(private val katePrivateRepo: KatePrivateWriteRepo
             // REQUEST, first deserialize to kate framework fields
             val bareRequest = deserializer.readValue(cr.value(), KateRequest::class.java)
             // then deserialize body
-            var callback = callbackMap[bareRequest.requestBodyType]
+            val callback = callbackMap[bareRequest.requestBodyType]
             if (callback != null) {
                 val kateRequest = convertJsonToKateRequest(cr.value())
-                if (kateRequest != null) {
-                    katePrivateRepo.saveKateRequest(kateRequest)
-                    LOGGER.info("REQUEST RECEIVED $kateRequest")
-                    callback.kateInvokeInternal(kateRequest)
-                }
+                katePrivateRepo.saveKateRequest(kateRequest)
+                LOGGER.info("REQUEST RECEIVED $kateRequest")
+                callback.kateInvokeInternal(kateRequest)
             }
         } catch (e: Exception) {
            LOGGER.error("=====> error ${e.message}")
