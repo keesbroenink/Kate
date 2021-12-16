@@ -47,10 +47,11 @@ class KateKafkaEventListener(val kateRequestReceivedCallbacks: List<KateEventRec
                 LOGGER.info("EVENT RECEIVED $kateEvent")
                 callback.kateInvokeInternal(kateEvent)
             }
+            ack.acknowledge()
         } catch (e: Exception) {
            LOGGER.error("=====> error ${e.message}")
         }
-        ack.acknowledge()
+
     }
 
 

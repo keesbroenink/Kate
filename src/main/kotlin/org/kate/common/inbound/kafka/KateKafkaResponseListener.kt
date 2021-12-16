@@ -54,10 +54,11 @@ class KateKafkaResponseListener(private val kateRepo: KateReadRepository,
                 }
                 callback.kateInvokeInternal(kateResponse, kateRequest)
             }
+            ack.acknowledge()
         } catch (e: Exception) {
             LOGGER.error("=====> error ${e.message}")
         }
-        ack.acknowledge()
+
     }
 
 

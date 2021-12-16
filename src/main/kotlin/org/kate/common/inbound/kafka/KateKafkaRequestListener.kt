@@ -49,10 +49,11 @@ class KateKafkaRequestListener(private val katePrivateRepo: KatePrivateWriteRepo
                 LOGGER.info("REQUEST RECEIVED $kateRequest")
                 callback.kateInvokeInternal(kateRequest)
             }
+            ack.acknowledge() // we have to think hard what to do when an exception occurs; is it valid no never move the offset or are there certain cases where we must move on
         } catch (e: Exception) {
            LOGGER.error("=====> error ${e.message}")
         }
-        ack.acknowledge()
+
     }
 
 
