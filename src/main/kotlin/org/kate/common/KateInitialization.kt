@@ -1,6 +1,5 @@
 package org.kate.common
 
-import org.apache.kafka.clients.admin.NewTopic
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -12,7 +11,6 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.PropertySource
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
-import org.springframework.kafka.config.TopicBuilder
 import org.springframework.kafka.core.*
 import org.springframework.kafka.listener.ContainerProperties
 import org.springframework.stereotype.Component
@@ -121,18 +119,5 @@ class KateInitialization(@Value("\${kate.consumer.bootstrap-servers}") val consu
         return KafkaTemplate(kateProducerFactory())
     }
 
-    // ADMIN
-
-    @Bean
-    fun admin(): KafkaAdmin = KafkaAdmin(producerConfigs())
-
-    @Bean
-    fun topic1(): NewTopic = TopicBuilder.name("KateBulletinBoardRequests").partitions(2).compact().build()
-    @Bean
-    fun topic2(): NewTopic = TopicBuilder.name("KateBulletinBoardResponses").partitions(2).compact().build()
-    @Bean
-    fun topic3(): NewTopic = TopicBuilder.name("KateBulletinBoardEvents").partitions(2).compact().build()
-    @Bean
-    fun topic4(): NewTopic = TopicBuilder.name("KateBulletinBoardErrors").partitions(2).compact().build()
 
 }

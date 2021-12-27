@@ -5,7 +5,7 @@ The KAfka requesT/ response framework with Events is developed by Kees Broenink 
 It can be freely used but cannot be adjusted or forked. Contact me for more information keesbroenink@gmail.com
 
 ## Basic concepts event driven request/ response
-Most webapplications talk to the server using HTTP which is a synchronous protocol. Also a lot of webservices (microservices)
+Most web applications talk to the server using HTTP which is a synchronous protocol. Also a lot of webservices (microservices)
 talk to each other using HTTP. Kate will help you to change this and make your software landscape truly asynchronous.
 
 The current approaches we see most of the time are a combination of request-response and event driven where the latter is
@@ -13,10 +13,10 @@ used to 'let the world know that something has happened'. What is missing here i
 an asynchronous message communication system. It is really hard to build software systems that only react on events to do some work. 
 We always have a need for commands and queries that should be answered. Kate will provide this missing part.
 
-The architecture of Kate is very straightforward. Requests are delivered to a generic topic (request bulletin board). Back-end services
-will subscribe to the topic and (enabled by Kate) check if they can answer the request. If so a request handling callback is called
-and the 3Gl developer can write the code to answer the request and (enabled by Kate) post the answer to another generic topic (response bulletin board).
-The back-end service that submitted the original request will write a callback (enabled by Kate) to receive the answer. If the
+The architecture of Kate is very straightforward. Requests are delivered to the request bulletin board topic. Back-end services
+will subscribe to the topic and Kate calls the callback in which the 3GL developer can write the code to answer the request.
+The 3GL calls a Kate API sender that will post the answer to the response bulletin board topic.
+The back-end service that submitted the original request will write the callback to receive the answer. If the
 request originated from a webclient the answer will then be delivered to the client.
 
 The framework tries to impact your microservice code to the very minimum. When using a software architecture where the 
@@ -25,18 +25,29 @@ without many changes. The main change will be that the business services will de
 them with the service method. Services will have void return values (errors should still be returned or raised).
 Requests will be put on Kafka (or similar middleware technology with publish/ subscribe support). Responses will come in 
 on a different thread and the microservice will handle them in callback methods enabled by Kate. The microservice developer 
-will be responsible to handle the response but Kate will help with convenience utilities to remember requests when the 
-developer has a need for them. 
+will be responsible to handle the response but Kate will help with convenience utilities to send messages and to remember 
+requests when the developer has a need for them. 
 Services that have no outbound needs (do not call other services) will probably not implement a callback for the response. 
 The original caller of the service will implement the callback and operate on the response, possibly by delivering the 
 response to the original webclient. 
 
+The Kate architecture is fully compliant with a multi-instance micro-service architecture. A request consumer for a certain
+domain service will always use the same Kafka consumer group name, so every request will be handled by exactly one instance. 
+The responses on the other hand are read by all instances of the domain services that need the answer. 
+Kate wants to be flexible and light-weight and doesn't manage an administration which instance handled the request. 
+But Kate makes sure that only the callback of the instance that handled the request will be triggered to handle the response. 
+Other instances will ignore the response. The consumer group name for the responses is appended with the OS process id to 
+make it unique.
+
 ## Reactive Manifesto
 
-The Reactive Manifesto https://www.reactivemanifesto.org/ sets the stage for modern software architectures to support high performant reliable systems with many users.
-The Kate framework fits in here very well. It addresses the Message Driven principle because request and responses will be real asynchronous messages.
-Kate uses Kafka. Kafka is a robust reliable message system that scales very well. If you combine this with microservices on e.g. Kubernetes,
-the whole server landscape will become Responsive, Resilient and Elastic. When a microservice (Kafka consumer) crashes, another instance will pick up the message again
+The Reactive Manifesto https://www.reactivemanifesto.org/ sets the stage for modern software architectures to support high 
+performant reliable systems with many users.
+The Kate framework fits in here very well. It addresses the Message Driven principle because request and responses will 
+be real asynchronous messages.
+Kate uses Kafka. Kafka is a robust reliable message system that scales very well. If you combine this with microservices 
+on e.g. Kubernetes, the whole server landscape will become Responsive, Resilient and Elastic. 
+When a microservice (Kafka consumer) crashes, another instance will pick up the message again
 because messages will stay on Kafka. Only on successful processing the consumer will commit the new read offset.
 
 ## Technical dependencies
@@ -50,12 +61,8 @@ See build.gradle.kts
 - Kafka
 
 Used in the examples
-- JUnit
-- Spring Boot dev tools
-- Spring Boot starter test
-- Spring Boot Actuator
-- Springdoc open api
-- H2
+- JUnit 5 (Jupiter)
+- springdoc-openapi-ui
 
 ## Events
 
@@ -68,4 +75,27 @@ Kate supports notifying error events. It works the same as Kate events but uses 
 
 ## Examples
 
-In progress: examples as separate module
+### Car sell advice
+The test directory contains a cars example to help you build microservices with Kate. Package: `org.kate.examples.cars`
+
+If offers a simple HTML webclient by means of Swagger on http://localhost:9090/cars/swagger-ui.html
+
+The cars example consists of four microservices:
+- web-svc: the web layer to receive HTTP car requests, call a service to handle the request and deliver the response to the web-client
+- car-advice-svc: the calculation of the value of a car and the advice if you should sell or not
+- car-value-svc: the value of a certain car (used by car-advice-svc)
+- car-bonusvalue-svc: certain Car types have extra value (used by car-advice-svc)
+
+The web service uses DeferredResult to communicate in an asynchronous way with the web client. When the request is not answered
+within a given amount of microseconds the web client receives a HTTP status 408 (TIMEOUT).
+The car value and car bonus value service are very simple services that register a request callback and return the car value
+or car bonus value to the reply topic that is provided with the request. So even if these services are called from another
+domain with possibly a different Kafka response bulletin board, the answers will be delivered to the right place.
+
+The car advice service has an extra challenge because it needs to call two services in parallel. And only when both answers
+are received, it can deliver the advice to the Kafka response bulletin board. Study the code carefully to learn how this can be done. 
+
+The car example comes with a Spring Boot main and can be executed by running the main. Note that a better way of using and 
+testing Kate is to deploy the four services as separate applications (with multiple instances). TODO: create four JAR files 
+and Docker files. Also create a separate JAR with all request and response objects. 
+ 

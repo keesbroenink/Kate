@@ -19,8 +19,8 @@ private fun convertJsonToBareKateResponse(json: String): KateResponse = deserial
 
 fun convertJsonToKateEvent(json: String) : KateEvent {
     val bareKateEvent = convertJsonToBareKateEvent(json)
-    if (!json.contains("eventBody")) throw KateMalFormedObject()
-    val body = json.substringAfter("eventBody\":").removeSuffix("}")
+    if (!json.contains("\"eventBody\":")) throw KateMalFormedObjectException()
+    val body = json.substringAfter("\"eventBody\":").removeSuffix("}")
     val eventBody = deserializer.readValue(body, Class.forName(bareKateEvent.eventBodyType))
     bareKateEvent.eventBody = eventBody as KateEventBody
     return bareKateEvent
@@ -28,8 +28,8 @@ fun convertJsonToKateEvent(json: String) : KateEvent {
 
 fun convertJsonToKateRequest(json: String) : KateRequest {
     val bareKateRequest = convertJsonToBareKateRequest(json)
-    if (!json.contains("requestBody")) throw KateMalFormedObject()
-    val body = json.substringAfter("requestBody\":").removeSuffix("}")
+    if (!json.contains("\"requestBody\":")) throw KateMalFormedObjectException()
+    val body = json.substringAfter("\"requestBody\":").removeSuffix("}")
     val requestBody = deserializer.readValue(body, Class.forName(bareKateRequest.requestBodyType))
     bareKateRequest.requestBody = requestBody as KateRequestBody
     return bareKateRequest
@@ -37,8 +37,8 @@ fun convertJsonToKateRequest(json: String) : KateRequest {
 
 fun convertJsonToKateResponse(json: String) : KateResponse {
     val bareKateResponse = convertJsonToBareKateResponse(json)
-    if (!json.contains("responseBody")) throw KateMalFormedObject()
-    val body = json.substringAfter("responseBody\":").removeSuffix("}")
+    if (!json.contains("\"responseBody\":")) throw KateMalFormedObjectException()
+    val body = json.substringAfter("\"responseBody\":").removeSuffix("}")
     val responseBody = deserializer.readValue(body, Class.forName(bareKateResponse.responseBodyType))
     bareKateResponse.responseBody = responseBody as KateResponseBody
     return bareKateResponse

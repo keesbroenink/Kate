@@ -6,6 +6,7 @@ import org.kate.common.KateResponseBody
 import org.kate.common.KateResponseReceivedCallback
 import org.kate.common.conversion.convertJsonToKateResponse
 import org.kate.common.conversion.deserializer
+import org.kate.repository.KatePrivateWriteRepository
 import org.kate.repository.KateReadRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class KateKafkaResponseListener(private val kateRepo: KateReadRepository,
+                                private val katePrivateRepo: KatePrivateWriteRepository,
                                 private val kateResponseReceivedCallbacks: List<KateResponseReceivedCallback<out KateResponseBody>>) {
     companion object {
         val LOGGER: Logger = LoggerFactory.getLogger(KateKafkaResponseListener::class.java)
@@ -52,6 +54,7 @@ class KateKafkaResponseListener(private val kateRepo: KateReadRepository,
                 if (kateRequest.parentRequestId != null) {
                     kateRepo.getRequest(kateRequest.parentRequestId)//throws exception if not found
                 }
+                katePrivateRepo.saveKateResponseByRequestId(kateRequest, kateResponse)
                 callback.kateInvokeInternal(kateResponse, kateRequest)
             }
             ack.acknowledge()

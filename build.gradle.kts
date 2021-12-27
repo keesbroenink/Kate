@@ -1,7 +1,7 @@
 plugins {
-    kotlin("jvm") version "1.5.10"
-    kotlin("plugin.spring") version "1.5.10"
-    kotlin("plugin.jpa") version "1.5.10"
+    kotlin("jvm") version "1.5.30"
+    kotlin("plugin.spring") version "1.5.30"
+    kotlin("plugin.jpa") version "1.5.30"
     id("java-library")
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("org.springframework.boot") version "2.6.0"
@@ -71,16 +71,12 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     implementation("org.springframework.boot:spring-boot-starter-web")
-//    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-//    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-//    implementation("org.springdoc:springdoc-openapi-ui:1.5.12")
-//    implementation("org.springdoc:springdoc-openapi-kotlin:1.5.12")
     implementation("org.springframework.kafka:spring-kafka")
 
-//    runtimeOnly("com.h2database:h2:2.0.202")
-//    runtimeOnly("org.springframework.boot:spring-boot-devtools")
-//    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springdoc:springdoc-openapi-ui:1.5.12")
+    testImplementation("org.springdoc:springdoc-openapi-kotlin:1.5.12")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 tasks.getByName<Test>("test") {

@@ -1,0 +1,24 @@
+
+management.endpoints.web.exposure.include: health,info
+management.endpoint.info.enabled: true
+management.endpoint.health.enabled: true
+#should be never in production
+management.endpoint.health.show-details: always
+
+# should be false in production
+spring.devtools.add-properties: true
+
+server.servlet.context-path: /cars
+server.port: 9090
+
+kate.producer.bootstrap-servers: localhost:9093
+kate.consumer.bootstrap-servers: localhost:9093
+kate.consumer.request-group-id : cars-request-consumer
+kate.consumer.response-group-id: cars-response-consumer
+kate.consumer.event-group-id   : cars-event-consumer
+kate.default-request-topic  : CarsBulletinBoardRequests
+kate.default-response-topic : CarsBulletinBoardResponses
+kate.default-event-topic    : CarsBulletinBoardEvents
+kate.default-error-topic    : CarsBulletinBoardErrors
+#let's listen to errors
+kate.consumer.event-topics: ${kate.default-event-topic}, ${kate.default-error-topic}

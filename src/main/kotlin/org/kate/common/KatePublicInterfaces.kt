@@ -21,16 +21,6 @@ interface KateResponseReceivedCallback<T: KateResponseBody>{
     fun invoke(response: KateResponse, request: KateRequest)
 }
 
-interface KateMultipleResponsesReceivedCallback<T: KateResponseBody>{
-    fun getBodyType(bodyType: T) {}
-    fun kateInvokeInternal(response: KateResponse, request: KateRequest) {
-
-    }
-
-    fun invoke(responses: List<KateResponse>, originalRequest: KateRequest)
-    fun numberResponses(): Int
-}
-
 interface KateEventReceivedCallback<T: KateEventBody> {
     fun getBodyType(bodyType: T) {}
     fun kateInvokeInternal(event: KateEvent) {

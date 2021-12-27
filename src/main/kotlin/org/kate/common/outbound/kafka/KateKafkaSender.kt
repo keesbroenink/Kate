@@ -17,10 +17,16 @@ class KateKafkaSender(private val kafkaTemplate: KafkaTemplate<String, String>,
         private val LOGGER = LoggerFactory.getLogger(KateKafkaSender::class.java)
     }
     fun sendRequestMessage(kateRequest: KateRequest, topic: String=kateInitialization.producerRequestTopic ) {
-        repository.saveKateRequest(kateRequest)
-        kafkaTemplate.send(topic, kateRequest.traceId, convertKateRequestToJson(kateRequest))
+        val request = if (kateRequest.replyTopic==null)
+                          kateRequest.copy(replyTopic = kateInitialization.producerResponseTopic)
+                      else
+                          kateRequest
+        repository.saveKateRequest(request)
+        kafkaTemplate.send(topic, request.traceId, convertKateRequestToJson(request))
     }
-
+    /**
+     * Use replyTopic in kateRequest.
+     */
     fun sendReply(kateRequest: KateRequest, responseObject: KateResponse ) {
         if (kateRequest.replyTopic == null) throw IllegalArgumentException("The request's field replyTopic is not defined")
         repository.saveKateResponseByRequestId(kateRequest, responseObject)
@@ -42,6 +48,7 @@ class KateKafkaSender(private val kafkaTemplate: KafkaTemplate<String, String>,
 
     fun sendErrorMessage(relatedTraceId: String, requestId: String, impact: KateErrorImpact, errorDescription: String,
                          recoveryHint: String, topic: String=kateInitialization.producerErrorTopic) {
+        LOGGER.error("$errorDescription. $recoveryHint" )
         val kateEvent = KateEvent.create(traceId= relatedTraceId,
             eventBody = KateErrorMessageBody(impact = impact, errorDescription = errorDescription, recoveryHint = recoveryHint, relatedRequestId = requestId))
         kafkaTemplate.send( topic, relatedTraceId, convertKateEventToJson(kateEvent))
