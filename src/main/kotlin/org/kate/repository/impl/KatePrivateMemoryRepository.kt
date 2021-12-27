@@ -12,6 +12,7 @@ import org.kate.repository.KatePrivateWriteRepository
 import org.kate.repository.ObjectType
 import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArrayList
 
 @Component
 class KatePrivateMemoryRepository() : KatePrivateWriteRepository, KatePrivateReadRepository {
@@ -30,7 +31,7 @@ class KatePrivateMemoryRepository() : KatePrivateWriteRepository, KatePrivateRea
     override fun saveKateResponseByRequestId(request: KateRequest, response: KateResponse) {
         kateResponseMap[request.id] = convertKateResponseToJson(response)
         if (request.parentRequestId != null) {
-            val jsonList = kateResponseByParentRequestMap[request.parentRequestId] ?: mutableListOf()
+            val jsonList = kateResponseByParentRequestMap[request.parentRequestId] ?: CopyOnWriteArrayList()
             jsonList.add(kateResponseMap[request.id]!!)
             kateResponseByParentRequestMap[request.parentRequestId] = jsonList
         }

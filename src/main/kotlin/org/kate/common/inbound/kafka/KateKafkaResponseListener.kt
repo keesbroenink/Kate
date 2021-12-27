@@ -6,6 +6,7 @@ import org.kate.common.KateResponseBody
 import org.kate.common.KateResponseReceivedCallback
 import org.kate.common.conversion.convertJsonToKateResponse
 import org.kate.common.conversion.deserializer
+import org.kate.repository.KateObjectNotFoundException
 import org.kate.repository.KatePrivateWriteRepository
 import org.kate.repository.KateReadRepository
 import org.slf4j.Logger
@@ -48,14 +49,16 @@ class KateKafkaResponseListener(private val kateRepo: KateReadRepository,
             val callback = callbackMap[bareResponse.responseBodyType]
             if (callback != null) {
                 val kateResponse = convertJsonToKateResponse(cr.value())
-                KateKafkaRequestListener.LOGGER.info("RESPONSE RECEIVED $kateResponse")
-                val kateRequest = kateRepo.getRequest(kateResponse.requestId)
-                // if we don't have the parent request it doesn't make sense to deliver responses
-                if (kateRequest.parentRequestId != null) {
-                    kateRepo.getRequest(kateRequest.parentRequestId)//throws exception if not found
-                }
-                katePrivateRepo.saveKateResponseByRequestId(kateRequest, kateResponse)
-                callback.kateInvokeInternal(kateResponse, kateRequest)
+                try {
+                    val kateRequest = kateRepo.getRequest(kateResponse.requestId)
+                    // if we don't have the parent request it doesn't make sense to deliver responses
+                    if (kateRequest.parentRequestId != null) {
+                        kateRepo.getRequest(kateRequest.parentRequestId)//throws exception if not found
+                    }
+                    katePrivateRepo.saveKateResponseByRequestId(kateRequest, kateResponse)
+                    KateKafkaRequestListener.LOGGER.info("RESPONSE RECEIVED $kateResponse")
+                    callback.kateInvokeInternal(kateResponse, kateRequest)
+                } catch (notfound: KateObjectNotFoundException) {}
             }
             ack.acknowledge()
         } catch (e: Exception) {
