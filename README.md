@@ -66,12 +66,18 @@ Used in the examples
 
 ## Events
 
-An alternative to request/ response is to notify that something has happened. With Kate you can publish an Event message on a generic topic (event bulletin board).
-Microservices can write a callback handler (enabled by Kate) to react on messages of a certain type.
+An alternative to request/ response is to notify that something has happened. With Kate you can publish an Event message on 
+event bulletin board topic.
+Microservices can write a callback handler to react on messages of a certain type.
 
 ## Errors
 
-Kate supports notifying error events. It works the same as Kate events but uses a different generic top (error bulletin board).
+Kate supports notifying error events. It works the same as Kate events but uses a different error bulletin board topic.
+Microservices can write a callback handler to react on error messages. The following setting is needed to make this work:
+
+```
+kate.consumer.event-topics: ${kate.default-event-topic}, ${kate.default-error-topic}
+```
 
 ## Examples
 
@@ -88,12 +94,13 @@ The cars example consists of four microservices:
 
 The web service uses DeferredResult to communicate in an asynchronous way with the web client. When the request is not answered
 within a given amount of microseconds the web client receives a HTTP status 408 (TIMEOUT).
-The car value and car bonus value service are very simple services that register a request callback and return the car value
-or car bonus value to the reply topic that is provided with the request. So even if these services are called from another
-domain with possibly a different Kafka response bulletin board, the answers will be delivered to the right place.
 
 The car advice service has an extra challenge because it needs to call two services in parallel. And only when both answers
 are received, it can deliver the advice to the Kafka response bulletin board. Study the code carefully to learn how this can be done. 
+
+The car value and car bonus value service are very simple services that register a request callback and return the car value
+or car bonus value to the reply topic that is provided with the request. So even if these services are called from another
+domain with possibly a different Kafka response bulletin board, the answers will be delivered to the right place.
 
 The car example comes with a Spring Boot main and can be executed by running the main. Note that a better way of using and 
 testing Kate is to deploy the four services as separate applications (with multiple instances). TODO: create four JAR files 
