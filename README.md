@@ -68,12 +68,12 @@ Used in the examples
 ## Events
 
 An alternative to request/ response is to notify that something has happened. With Kate you can publish an Event message on 
-event bulletin board topic.
+the event bulletin board topic.
 Microservices can write a callback handler to react on messages of a certain type.
 
 ## Errors
 
-Kate supports notifying error events. It works the same as Kate events but uses a different error bulletin board topic.
+Kate supports notifying error events. It works the same as Kate events but uses a different topic: the error bulletin board topic.
 Microservices can write a callback handler to react on error messages. The following setting is needed to make this work:
 
 ```
@@ -91,10 +91,11 @@ The cars example consists of four microservices:
 - web-svc: the web layer to receive HTTP car requests, call a service to handle the request and deliver the response to the web-client
 - car-advice-svc: the calculation of the value of a car and the advice if you should sell or not
 - car-value-svc: the value of a certain car (used by car-advice-svc)
-- car-bonusvalue-svc: certain Car types have extra value (used by car-advice-svc)
+- car-bonusvalue-svc: certain car types have extra value (used by car-advice-svc)
 
 The web service uses DeferredResult to communicate in an asynchronous way with the web client. When the request is not answered
-within a given amount of microseconds the web client receives a HTTP status 408 (TIMEOUT).
+within a given amount of microseconds the web client receives an HTTP status 408 (TIMEOUT). It is easy to extend Kate with other
+asynchronous protocols and frameworks (websockets, Flux).
 
 The car advice service has an extra challenge because it needs to call two services in parallel. And only when both answers
 are received, it can deliver the advice to the Kafka response bulletin board. Study the code carefully to learn how this can be done. 
