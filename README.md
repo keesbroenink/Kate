@@ -27,13 +27,13 @@ Requests will be put on Kafka (or similar middleware technology with publish/ su
 on a different thread and the microservice will handle them in callback methods enabled by Kate. The microservice developer 
 will be responsible to handle the response but Kate will help with convenience utilities to send messages and to remember 
 requests when the developer has a need for them. 
-Services that have no outbound needs (do not call other services) will probably not implement a callback for the response. 
+Services that have no outbound needs (do not call other services) will not implement response callbacks. 
 The original caller of the service will implement the callback and operate on the response, possibly by delivering the 
 response to the original webclient. 
 
 The Kate architecture is fully compliant with a multi-instance micro-service architecture. A request consumer for a certain
-domain service will always use the same Kafka consumer group name, so every request will be handled by exactly one instance. 
-The responses on the other hand are read by all instances of the domain services that need the answer. 
+domain service will always use the same Kafka consumer group name. In this way every request will be handled by exactly one instance.
+The responses on the other hand are read by all instances of the domain services that could need the answer. 
 Kate wants to be flexible and light-weight and doesn't manage an administration which instance handled the request. 
 But Kate makes sure that only the callback of the instance that handled the request will be triggered to handle the response. 
 Other instances will ignore the response. The consumer group name for the responses is appended with the OS process id to 
@@ -49,6 +49,7 @@ Kate uses Kafka. Kafka is a robust reliable message system that scales very well
 on e.g. Kubernetes, the whole server landscape will become Responsive, Resilient and Elastic. 
 When a microservice (Kafka consumer) crashes, another instance will pick up the message again
 because messages will stay on Kafka. Only on successful processing the consumer will commit the new read offset.
+Kate could easily be extended with support for similar systems like Kafka.
 
 ## Technical dependencies
 
