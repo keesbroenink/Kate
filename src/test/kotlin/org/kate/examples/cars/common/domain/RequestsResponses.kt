@@ -5,10 +5,12 @@ import org.kate.common.KateRequestBody
 import org.kate.common.KateResponseBody
 
 data class SellCarRequest(
-    val action: String = "SHOULD I SELL", val type: String, val yearBuilt: Int,  val licensePlate: String, val minimumPriceEuros: Int
+    val type: String, val yearBuilt: Int,  val licensePlate: String, val minimumPriceEuros: Int
 ) : KateRequestBody
 
-data class SellCarResponse( val result: String, val type: String, val yearBuilt: Int, val licensePlate: String, val minimumPriceEuros: Int
+enum class SellAdvice{SELL,DONT_SELL}
+
+data class SellCarResponse( val result: SellAdvice, val type: String, val yearBuilt: Int, val licensePlate: String, val minimumPriceEuros: Int
 ) : KateResponseBody
 
 data class CarValueRequest( val type:String, val yearBuilt: Int): KateRequestBody

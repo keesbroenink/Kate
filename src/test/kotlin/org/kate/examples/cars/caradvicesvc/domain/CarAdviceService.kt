@@ -46,12 +46,12 @@ class CalculateResult(val sender: KateKafkaSender, val kateRepo: KateReadReposit
         val car = kateRepo.findFirstResponseBodyByParentRequestId(parentRequestId, CarValueResponse::class.java) ?: return
         val bonus = kateRepo.findFirstResponseBodyByParentRequestId(parentRequestId, CarBonusValueResponse::class.java) ?: return
 
-        val result = if (car.euros + bonus.euros >= sellCarRequest.minimumPriceEuros) "SELL" else "DO NOT SELL"
+        val result = if (car.euros + bonus.euros >= sellCarRequest.minimumPriceEuros) SellAdvice.SELL else SellAdvice.DONT_SELL
 
         sender.sendReply( parentRequest, buildResponse(traceId, parentRequestId, result, sellCarRequest) )
     }
 
-    private fun buildResponse( traceId: String, parentRequestId: String, result: String, carAdvice: SellCarRequest) =
+    private fun buildResponse( traceId: String, parentRequestId: String, result: SellAdvice, carAdvice: SellCarRequest) =
         KateResponse.create( traceId = traceId, requestId = parentRequestId,
             responseBody = SellCarResponse(
                 result, type = carAdvice.type, yearBuilt = carAdvice.yearBuilt,
