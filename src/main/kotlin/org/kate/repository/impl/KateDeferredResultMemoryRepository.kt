@@ -22,7 +22,6 @@ class KateDeferredResultMemoryRepository<T>(val kafkaSender: KateKafkaSender) : 
     override fun registerDeferredResult(traceId: String, requestId: String, timeOutMs: Long): DeferredResult<T> {
         deferredResultMap[requestId] = Pair(timeOutMs, DeferredResult<T>(timeOutMs))
         val deferredResult = deferredResultMap[requestId]!!.second
-        val timeOutMs = deferredResultMap[requestId]!!.first
         deferredResult.onTimeout {
             val errorStr = "Within the waiting period $timeOutMs ms we received no result for request $requestId"
             kafkaSender.sendErrorMessage(traceId, requestId, KateErrorImpact.LOW, errorStr, "Try again")
