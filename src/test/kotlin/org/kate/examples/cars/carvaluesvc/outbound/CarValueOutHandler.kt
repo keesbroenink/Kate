@@ -6,15 +6,10 @@ import org.kate.common.KateResponse
 import org.kate.common.outbound.kafka.KateKafkaSender
 import org.kate.examples.cars.common.domain.CarValueRequest
 import org.kate.examples.cars.common.domain.CarValueResponse
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
 class CarValueOutHandler (val kateKafkaSender: KateKafkaSender)  {
-    companion object {
-        val LOGGER: Logger = LoggerFactory.getLogger(CarValueOutHandler::class.java)
-    }
 
     fun sendResult(request: KateRequest, priceEuros: Int) {
         val car = request.requestBody as CarValueRequest;

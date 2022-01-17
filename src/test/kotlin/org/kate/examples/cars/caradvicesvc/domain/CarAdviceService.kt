@@ -1,45 +1,26 @@
 package org.kate.examples.cars.caradvicesvc.domain
 
-import org.kate.common.KateRequest
-import org.kate.common.KateRequestReceivedCallback
-import org.kate.common.KateResponse
-import org.kate.common.KateResponseReceivedCallback
-import org.kate.common.outbound.kafka.KateKafkaSender
-import org.kate.examples.cars.common.domain.*
+import org.kate.examples.cars.caradvicesvc.outbound.CarAdviceOutHandler
+import org.kate.examples.cars.common.domain.CarBonusValueResponse
+import org.kate.examples.cars.common.domain.CarValueResponse
+import org.kate.examples.cars.common.domain.SellAdvice
+import org.kate.examples.cars.common.domain.SellCarRequest
 import org.kate.repository.KateReadRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
-class CarAdviceService( val kateKafkaSender: KateKafkaSender
-)  : KateRequestReceivedCallback<SellCarRequest> {
+class CarAdviceService(val kateRepo: KateReadRepository, val carAdviceOutHandler: CarAdviceOutHandler)  {
     companion object {
         val LOGGER: Logger = LoggerFactory.getLogger(CarAdviceService::class.java)
     }
 
-    override fun invoke(request: KateRequest) {
-        askValueAndBonus(request.traceId, request.id, request.requestBody as SellCarRequest)
+    fun askCarValueAndBonus(traceId: String, initialRequestId: String, car: SellCarRequest) {
+        carAdviceOutHandler.askCarValueAndBonus(traceId, initialRequestId, car)
     }
 
-    private fun askValueAndBonus(traceId: String, initialRequestId: String, car: SellCarRequest) {
-        kateKafkaSender.sendRequestMessage(
-            KateRequest.create( traceId = traceId, parentRequestId = initialRequestId,
-                requestBody = CarValueRequest(type = car.type, yearBuilt = car.yearBuilt)
-            )
-        )
-        kateKafkaSender.sendRequestMessage(
-            KateRequest.create( traceId = traceId, parentRequestId = initialRequestId,
-                requestBody = CarBonusValueRequest(type = car.type, yearBuilt = car.yearBuilt)
-            )
-        )
-    }
-}
-
-@Component
-class CalculateResult(val sender: KateKafkaSender, val kateRepo: KateReadRepository) {
-
-    fun adviceResult( traceId: String, parentRequestId: String) {
+    fun adviceResult( parentRequestId: String) {
         val parentRequest = kateRepo.getRequest(parentRequestId)
         val sellCarRequest = parentRequest.requestBody as SellCarRequest
 
@@ -47,32 +28,10 @@ class CalculateResult(val sender: KateKafkaSender, val kateRepo: KateReadReposit
         val bonus = kateRepo.findFirstResponseBodyByParentRequestId(parentRequestId, CarBonusValueResponse::class.java) ?: return
 
         val result = if (car.euros + bonus.euros >= sellCarRequest.minimumPriceEuros) SellAdvice.SELL else SellAdvice.DONT_SELL
-
-        sender.sendReply( parentRequest, buildResponse(traceId, parentRequestId, result, sellCarRequest) )
-    }
-
-    private fun buildResponse( traceId: String, parentRequestId: String, result: SellAdvice, carAdvice: SellCarRequest) =
-        KateResponse.create( traceId = traceId, requestId = parentRequestId,
-            responseBody = SellCarResponse(
-                result, type = carAdvice.type, yearBuilt = carAdvice.yearBuilt,
-                licensePlate = carAdvice.licensePlate, minimumPriceEuros = carAdvice.minimumPriceEuros
-            )
-        )
-}
-
-@Component
-class CarValueReceived( val calculate: CalculateResult) : KateResponseReceivedCallback<CarValueResponse> {
-    override fun invoke(response: KateResponse, request: KateRequest) {
-        if (request.parentRequestId == null) return
-        calculate.adviceResult(request.traceId, request.parentRequestId!!)
+        LOGGER.info("Give advice $result for request $sellCarRequest")
+        carAdviceOutHandler.sendAdviceResult(sellCarRequest, parentRequest, result)
     }
 }
 
-@Component
-class CarBonusValueReceived(val calculate: CalculateResult) : KateResponseReceivedCallback<CarBonusValueResponse> {
-    override fun invoke(response: KateResponse, request: KateRequest) {
-        if (request.parentRequestId == null) return
-        calculate.adviceResult(request.traceId, request.parentRequestId!!)
-    }
-}
+
 

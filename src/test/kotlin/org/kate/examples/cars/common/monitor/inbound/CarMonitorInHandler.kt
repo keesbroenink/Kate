@@ -1,16 +1,17 @@
-package org.kate.examples.cars.common.monitor
+package org.kate.examples.cars.common.monitor.inbound
 
 import org.kate.common.KateErrorMessageBody
 import org.kate.common.KateEvent
 import org.kate.common.KateEventReceivedCallback
 import org.kate.examples.cars.common.domain.CarValueResponse
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
-class CarMonitorService: KateEventReceivedCallback<CarValueResponse> {
+class CarMonitorEventHandler: KateEventReceivedCallback<CarValueResponse> {
     companion object {
-        val LOGGER = LoggerFactory.getLogger(CarMonitorService::class.java)
+        val LOGGER: Logger = LoggerFactory.getLogger(CarMonitorEventHandler::class.java)
     }
 
     override fun invoke(event: KateEvent) {
@@ -20,9 +21,9 @@ class CarMonitorService: KateEventReceivedCallback<CarValueResponse> {
 }
 
 @Component
-class CarMonitorErrorsService: KateEventReceivedCallback<KateErrorMessageBody> {
+class CarMonitorErrorHandler: KateEventReceivedCallback<KateErrorMessageBody> {
     companion object {
-        val LOGGER = LoggerFactory.getLogger(CarMonitorErrorsService::class.java)
+        val LOGGER: Logger = LoggerFactory.getLogger(CarMonitorErrorHandler::class.java)
     }
 
     override fun invoke(event: KateEvent) {

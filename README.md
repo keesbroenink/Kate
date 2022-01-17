@@ -94,8 +94,7 @@ The cars example consists of four microservices:
 - car-bonusvalue-svc: certain car types have extra value (used by car-advice-svc)
 
 Note that the examples are very basic and have no clear domain datatypes and validation. Its purpose is to show how you can
-build microservices using Kate. The car-value-svc is a bit more elaborate and follows the software architectural pattern
-onion/ hexagonal (but without validation). Also no security aspects are taken into account. It is educational software.
+build microservices using Kate. Also no security aspects are taken into account. It is educational software.
 
 The web service uses DeferredResult to communicate in an asynchronous way with the web client. When the request is not answered
 within a given amount of microseconds the web client receives an HTTP status 408 (TIMEOUT). It is easy to extend Kate with other

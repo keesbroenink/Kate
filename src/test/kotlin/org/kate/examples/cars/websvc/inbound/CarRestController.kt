@@ -1,4 +1,4 @@
-package org.kate.examples.cars.websvc.controller
+package org.kate.examples.cars.websvc.inbound
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -11,7 +11,7 @@ import java.util.*
 @RestController
 @RequestMapping("/api/cars")
 @Tag( name = "/api/cars", description = "Acting on cars")
-internal class CarController(private val service: CarService) {
+internal class CarRestController(private val service: CarService) {
 
     @PutMapping("/adviceSellCar")
     @Operation(summary = "Should I sell my car?", description="details")
