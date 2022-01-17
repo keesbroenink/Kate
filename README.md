@@ -22,8 +22,7 @@ request originated from a webclient the answer will then be delivered to the cli
 The framework tries to impact your microservice code to the very minimum. When using a software architecture where the 
 domain layer is central and technology-agnostic (e.g. onion or hexagonal) you are able to use Kate
 without many changes. The main change will be that the business services will deliver their answers not by returning
-them with the service method. Services will have void return values (errors should still be returned or raised).
-Requests will be put on Kafka (or similar middleware technology with publish/ subscribe support). Responses will come in 
+them with the service method. Requests will be put on Kafka (or similar middleware technology with publish/ subscribe support). Responses will come in 
 on a different thread and the microservice will handle them in callback methods enabled by Kate. The microservice developer 
 will be responsible to handle the response but Kate will help with convenience utilities to send messages and to remember 
 requests when the developer has a need for them. 

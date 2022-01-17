@@ -1,4 +1,4 @@
-package org.kate.examples.cars.caradvicesvc.inboud
+package org.kate.examples.cars.caradvicesvc.inbound
 
 import org.kate.common.KateRequest
 import org.kate.common.KateRequestReceivedCallback
