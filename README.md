@@ -1,7 +1,7 @@
 # KATE, a small framework for event driven request/ response with Kafka
 
 ## Copyright
-The KAfka requesT/ response framework with Events is developed by Kees Broenink in 2021.
+The KAfka requesT/ response Event driven framework is developed by Kees Broenink in 2021.
 It can be freely used but cannot be adjusted or forked. Contact me for more information keesbroenink@gmail.com
 
 ## Basic concepts event driven request/ response
