@@ -2,7 +2,7 @@
 
 ## Copyright
 The KAfka requesT/ response Event driven framework is developed by Kees Broenink in 2021.
-It can be freely used but cannot be adjusted or forked. Contact me for more information keesbroenink@gmail.com
+If you want to use (parts of) it I would appreciate it when you contact me keesbroenink@gmail.com
 
 ## Basic concepts event driven request/ response
 Most web applications talk to the server using HTTP which is a synchronous protocol. Also a lot of webservices (microservices)
