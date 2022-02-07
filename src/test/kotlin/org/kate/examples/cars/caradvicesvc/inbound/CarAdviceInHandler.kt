@@ -7,13 +7,13 @@ import org.kate.common.KateResponseReceivedCallback
 import org.kate.examples.cars.caradvicesvc.domain.CarAdviceService
 import org.kate.examples.cars.common.domain.CarBonusValueResponse
 import org.kate.examples.cars.common.domain.CarValueResponse
-import org.kate.examples.cars.common.domain.SellCarRequest
+import org.kate.examples.cars.common.domain.CarAdviceRequest
 import org.springframework.stereotype.Component
 
 @Component
-class CarAdviceInHandler( val carAdviceService: CarAdviceService)  : KateRequestReceivedCallback<SellCarRequest> {
+class CarAdviceInHandler( val carAdviceService: CarAdviceService)  : KateRequestReceivedCallback<CarAdviceRequest> {
     override fun invoke(request: KateRequest) {
-        carAdviceService.askCarValueAndBonus(request.traceId, request.id, request.requestBody as SellCarRequest)
+        carAdviceService.carAdvice(request.traceId, request.id, request.requestBody as CarAdviceRequest)
     }
 }
 
@@ -21,7 +21,7 @@ class CarAdviceInHandler( val carAdviceService: CarAdviceService)  : KateRequest
 class CarValueReceived( val carAdviceService: CarAdviceService) : KateResponseReceivedCallback<CarValueResponse> {
     override fun invoke(response: KateResponse, request: KateRequest) {
         request.parentRequestId?.apply {
-            carAdviceService.adviceResult(this)
+            carAdviceService.carAdviceResult(this)
         }
     }
 }
@@ -30,7 +30,7 @@ class CarValueReceived( val carAdviceService: CarAdviceService) : KateResponseRe
 class CarBonusValueReceived(val carAdviceService: CarAdviceService) : KateResponseReceivedCallback<CarBonusValueResponse> {
     override fun invoke(response: KateResponse, request: KateRequest) {
         request.parentRequestId?.apply {
-            carAdviceService.adviceResult(this)
+            carAdviceService.carAdviceResult(this)
         }
     }
 }

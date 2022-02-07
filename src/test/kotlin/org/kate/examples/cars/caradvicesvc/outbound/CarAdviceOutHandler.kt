@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 @Component
 class CarAdviceOutHandler( val kateKafkaSender: KateKafkaSender)  {
 
-    fun askCarValueAndBonus(traceId: String, initialRequestId: String, car: SellCarRequest) {
+    fun askCarValueAndBonus(traceId: String, initialRequestId: String, car: CarAdviceRequest) {
         kateKafkaSender.sendRequestMessage(
             KateRequest.create( traceId = traceId, parentRequestId = initialRequestId,
                 requestBody = CarValueRequest(type = car.type, yearBuilt = car.yearBuilt)
@@ -22,13 +22,13 @@ class CarAdviceOutHandler( val kateKafkaSender: KateKafkaSender)  {
         )
     }
 
-    fun sendAdviceResult( sellCarRequestBody: SellCarRequest, parentRequest: KateRequest, result: SellAdvice) {
-        kateKafkaSender.sendReply( parentRequest, buildResponse(parentRequest.traceId, parentRequest.id, result, sellCarRequestBody) )
+    fun sendAdviceResult(carAdviceRequestBody: CarAdviceRequest, carAdviceRequest: KateRequest, result: SellAdvice) {
+        kateKafkaSender.sendReply( carAdviceRequest, buildResponse(carAdviceRequest.traceId, carAdviceRequest.id, result, carAdviceRequestBody) )
     }
 
-    private fun buildResponse( traceId: String, parentRequestId: String, result: SellAdvice, carAdvice: SellCarRequest) =
+    private fun buildResponse( traceId: String, parentRequestId: String, result: SellAdvice, carAdvice: CarAdviceRequest) =
         KateResponse.create( traceId = traceId, requestId = parentRequestId,
-            responseBody = SellCarResponse(
+            responseBody = CarAdviceResponse(
                 result, type = carAdvice.type, yearBuilt = carAdvice.yearBuilt,
                 licensePlate = carAdvice.licensePlate, minimumPriceEuros = carAdvice.minimumPriceEuros
             )
