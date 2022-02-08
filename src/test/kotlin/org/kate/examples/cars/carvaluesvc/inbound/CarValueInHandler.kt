@@ -16,7 +16,7 @@ class CarValueInHandler (val carValueService: CarValueService,
 
         val priceEuros = carValueService.calculateValue(car.yearBuilt)
 
-        carValueOutHandler.sendResult(request, priceEuros)
+        carValueOutHandler.sendCarValue(request, priceEuros)
 
     }
 }

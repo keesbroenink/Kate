@@ -14,6 +14,6 @@ class CarBonusValueInHandler (val carBonusValueService: CarBonusValueService,
     override fun invoke(request: KateRequest) {
         val car = request.requestBody as CarBonusValueRequest;
         val bonus = carBonusValueService.calculateValue(car.type)
-        carBonusValueOutHandler.sendResult(request, bonus)
+        carBonusValueOutHandler.sendBonusValue(request, bonus)
     }
 }

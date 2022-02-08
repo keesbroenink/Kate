@@ -9,26 +9,35 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
+interface CarAdviceService {
+    fun carAdvice(traceId: String, carAdviceRequestId: String, car: CarAdviceRequest)
+    fun carAdviceResult(carAdviceRequestId: String)
+}
+
 @Component
-class CarAdviceService(val calculateCarAdviceService: CalculateCarAdviceService,
-                       val kateRepo: KateReadRepository,
-                       val carAdviceOutHandler: CarAdviceOutHandler)  {
+class CarAdviceServiceImpl(val calculateCarAdviceService: CalculateCarAdviceService,
+                           val kateRepo: KateReadRepository,
+                           val carAdviceOutHandler: CarAdviceOutHandler) : CarAdviceService {
     companion object {
         val LOGGER: Logger = LoggerFactory.getLogger(CarAdviceService::class.java)
     }
 
-    fun carAdvice(traceId: String, initialRequestId: String, car: CarAdviceRequest) {
-        carAdviceOutHandler.askCarValueAndBonus(traceId, initialRequestId, car)
+    override fun carAdvice(traceId: String, carAdviceRequestId: String, car: CarAdviceRequest) {
+        carAdviceOutHandler.askCarValueAndBonus(traceId, carAdviceRequestId, car)
     }
 
-    fun carAdviceResult(carAdviceRequestId: String) {
+    override fun carAdviceResult(carAdviceRequestId: String) {
         val carAdviceRequest = kateRepo.getRequest(carAdviceRequestId)
         val carAdviceRequestBody = carAdviceRequest.requestBody as CarAdviceRequest
 
-        val car = kateRepo.findFirstResponseBodyByParentRequestId(carAdviceRequestId, CarValueResponse::class.java) ?: return
-        val bonus = kateRepo.findFirstResponseBodyByParentRequestId(carAdviceRequestId, CarBonusValueResponse::class.java) ?: return
+        val car = kateRepo.findFirstResponseBodyByParentRequestId(carAdviceRequestId, CarValueResponse::class.java)
+            ?: return
+        val bonus = kateRepo.findFirstResponseBodyByParentRequestId(carAdviceRequestId, CarBonusValueResponse::class.java)
+            ?: return
+
         val result = calculateCarAdviceService.calculateCarAdvice(car.euros, bonus.euros, carAdviceRequestBody.minimumPriceEuros)
         LOGGER.info("Give advice $result for request $carAdviceRequestBody")
+
         carAdviceOutHandler.sendAdviceResult(carAdviceRequestBody, carAdviceRequest, result)
     }
 }

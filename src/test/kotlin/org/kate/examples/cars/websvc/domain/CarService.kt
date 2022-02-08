@@ -9,15 +9,22 @@ import org.kate.repository.KateDeferredResultRepository
 import org.springframework.stereotype.Component
 import org.springframework.web.context.request.async.DeferredResult
 
-@Component
-class CarService(val carOutHandler: CarOutHandler, val kateRepo: KateDeferredResultRepository<CarAdviceResponse>) {
+interface CarService {
+    fun sellCarAdvice(requestId: String, type: CarType, licensePlate: String, yearBuilt: Int, minimumPriceEuros: Int)
+                        : DeferredResult<CarAdviceResponse>
+    fun sellCarAdviceResult(response: KateResponse)
+}
 
-    fun sellCarAdvice(requestId: String, type: CarType, licensePlate: String, yearBuilt: Int, minimumPriceEuros: Int): DeferredResult<CarAdviceResponse> {
+@Component
+class CarServiceImpl(val carOutHandler: CarOutHandler,
+                     val kateRepo: KateDeferredResultRepository<CarAdviceResponse>) : CarService{
+
+    override fun sellCarAdvice(requestId: String, type: CarType, licensePlate: String, yearBuilt: Int, minimumPriceEuros: Int): DeferredResult<CarAdviceResponse> {
         carOutHandler.submitRequestSellCarAdvice(requestId, CarAdviceRequest(type = type, licensePlate = licensePlate, yearBuilt = yearBuilt, minimumPriceEuros= minimumPriceEuros))
         return kateRepo.registerDeferredResult(requestId, requestId,500)
     }
 
-    fun sellCarAdviceResult(response: KateResponse) =
+    override fun sellCarAdviceResult(response: KateResponse) =
         kateRepo.resolveDeferredResult(response.requestId, response.requestId, response.responseBody as CarAdviceResponse)
 
 }

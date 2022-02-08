@@ -5,13 +5,17 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
+interface CarBonusValueService {
+    fun calculateValue(carType: CarType): Int
+}
+
 @Component
-class CarBonusValueService() {
+class CarBonusValueServiceImpl() : CarBonusValueService {
     companion object {
         val LOGGER: Logger = LoggerFactory.getLogger(CarBonusValueService::class.java)
     }
 
-    fun calculateValue(carType: CarType): Int {
+    override fun calculateValue(carType: CarType): Int {
         val carValue = when (carType) {
             CarType.TOYOTA -> 500
             else -> 0

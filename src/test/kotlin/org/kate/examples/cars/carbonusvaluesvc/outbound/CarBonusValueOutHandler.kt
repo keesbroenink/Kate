@@ -7,10 +7,14 @@ import org.kate.examples.cars.common.domain.CarBonusValueRequest
 import org.kate.examples.cars.common.domain.CarBonusValueResponse
 import org.springframework.stereotype.Component
 
-@Component
-class CarBonusValueOutHandler (val kateKafkaSender: KateKafkaSender)  {
+interface CarBonusValueOutHandler {
+    fun sendBonusValue(request: KateRequest, bonus: Int)
+}
 
-    fun sendResult(request: KateRequest, bonus: Int) {
+@Component
+class CarBonusValueOutHandlerImpl (val kateKafkaSender: KateKafkaSender) : CarBonusValueOutHandler {
+
+    override fun sendBonusValue(request: KateRequest, bonus: Int) {
         val car = request.requestBody as CarBonusValueRequest;
 
         kateKafkaSender.sendReply(request,

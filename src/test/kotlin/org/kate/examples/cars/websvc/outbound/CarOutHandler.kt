@@ -5,10 +5,14 @@ import org.kate.common.outbound.kafka.KateKafkaSender
 import org.kate.examples.cars.common.domain.CarAdviceRequest
 import org.springframework.stereotype.Component
 
-@Component
-class CarOutHandler(val kateKafkaSender: KateKafkaSender) {
+interface CarOutHandler {
+    fun submitRequestSellCarAdvice(requestId: String, requestBody : CarAdviceRequest)
+}
 
-    fun submitRequestSellCarAdvice(requestId: String, requestBody : CarAdviceRequest) =
+@Component
+class CarOutHandlerImpl(val kateKafkaSender: KateKafkaSender) : CarOutHandler{
+
+    override fun submitRequestSellCarAdvice(requestId: String, requestBody : CarAdviceRequest) =
         kateKafkaSender.sendRequestMessage( KateRequest.create(id= requestId, traceId=requestId, requestBody=requestBody))
 
 }
