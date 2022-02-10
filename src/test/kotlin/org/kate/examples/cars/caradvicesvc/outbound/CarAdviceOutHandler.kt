@@ -4,15 +4,16 @@ import org.kate.common.KateRequest
 import org.kate.common.KateResponse
 import org.kate.common.outbound.kafka.KateKafkaSender
 import org.kate.examples.cars.common.domain.*
+import org.kate.repository.KateReadRepository
 import org.springframework.stereotype.Component
 
 interface CarAdviceOutHandler {
     fun askCarValueAndBonus(traceId: String, carAdviceRequestId: String, car: CarAdviceRequest)
-    fun sendAdviceResult(carAdviceRequestBody: CarAdviceRequest, carAdviceRequest: KateRequest, result: SellAdvice)
+    fun sendAdviceResult(carAdviceRequestId: String, carAdviceRequestBody: CarAdviceRequest, result: SellAdvice)
 }
 
 @Component
-class CarAdviceOutHandlerImpl( val kateKafkaSender: KateKafkaSender): CarAdviceOutHandler  {
+class CarAdviceOutHandlerImpl(val kateRepository: KateReadRepository, val kateKafkaSender: KateKafkaSender): CarAdviceOutHandler  {
 
     override fun askCarValueAndBonus(traceId: String, carAdviceRequestId: String, car: CarAdviceRequest) {
         kateKafkaSender.sendRequestMessage(
@@ -27,8 +28,9 @@ class CarAdviceOutHandlerImpl( val kateKafkaSender: KateKafkaSender): CarAdviceO
         )
     }
 
-    override fun sendAdviceResult(carAdviceRequestBody: CarAdviceRequest, carAdviceRequest: KateRequest, result: SellAdvice) {
-        kateKafkaSender.sendReply( carAdviceRequest, buildResponse(carAdviceRequest.traceId, carAdviceRequest.id, result, carAdviceRequestBody) )
+    override fun sendAdviceResult(carAdviceRequestId: String, carAdviceRequestBody: CarAdviceRequest, result: SellAdvice) {
+        val kateRequest = kateRepository.getRequest(carAdviceRequestId)
+        kateKafkaSender.sendReply( kateRequest, buildResponse(kateRequest.traceId, carAdviceRequestId, result, carAdviceRequestBody) )
     }
 
     private fun buildResponse( traceId: String, parentRequestId: String, result: SellAdvice, carAdvice: CarAdviceRequest) =

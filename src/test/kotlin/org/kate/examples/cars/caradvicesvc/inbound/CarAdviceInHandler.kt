@@ -8,6 +8,7 @@ import org.kate.examples.cars.caradvicesvc.domain.CarAdviceService
 import org.kate.examples.cars.common.domain.CarBonusValueResponse
 import org.kate.examples.cars.common.domain.CarValueResponse
 import org.kate.examples.cars.common.domain.CarAdviceRequest
+import org.kate.repository.KateReadRepository
 import org.springframework.stereotype.Component
 
 @Component
@@ -18,19 +19,23 @@ class CarAdviceInHandler( val carAdviceService: CarAdviceService)  : KateRequest
 }
 
 @Component
-class CarValueReceived( val carAdviceService: CarAdviceService) : KateResponseReceivedCallback<CarValueResponse> {
+class CarValueReceived( val kateRepo: KateReadRepository,
+                        val carAdviceService: CarAdviceService) : KateResponseReceivedCallback<CarValueResponse> {
     override fun invoke(response: KateResponse, request: KateRequest) {
         request.parentRequestId?.apply {
-            carAdviceService.carAdviceResult(this)
+            val orgRequest = kateRepo.getRequest(this)
+            carAdviceService.carAdviceResult(this, orgRequest.requestBody as CarAdviceRequest)
         }
     }
 }
 
 @Component
-class CarBonusValueReceived(val carAdviceService: CarAdviceService) : KateResponseReceivedCallback<CarBonusValueResponse> {
+class CarBonusValueReceived(val kateRepo: KateReadRepository,
+                            val carAdviceService: CarAdviceService) : KateResponseReceivedCallback<CarBonusValueResponse> {
     override fun invoke(response: KateResponse, request: KateRequest) {
         request.parentRequestId?.apply {
-            carAdviceService.carAdviceResult(this)
+            val orgRequest = kateRepo.getRequest(this)
+            carAdviceService.carAdviceResult(this, orgRequest.requestBody as CarAdviceRequest)
         }
     }
 }
