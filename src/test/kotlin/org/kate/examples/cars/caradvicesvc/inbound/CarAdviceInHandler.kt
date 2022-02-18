@@ -1,13 +1,13 @@
 package org.kate.examples.cars.caradvicesvc.inbound
 
-import org.kate.common.KateRequest
-import org.kate.common.KateRequestReceivedCallback
-import org.kate.common.KateResponse
-import org.kate.common.KateResponseReceivedCallback
+import org.kate.domain.KateRequest
+import org.kate.domain.KateRequestReceivedCallback
+import org.kate.domain.KateResponse
+import org.kate.domain.KateResponseReceivedCallback
 import org.kate.examples.cars.caradvicesvc.domain.CarAdviceService
+import org.kate.examples.cars.common.domain.CarAdviceRequest
 import org.kate.examples.cars.common.domain.CarBonusValueResponse
 import org.kate.examples.cars.common.domain.CarValueResponse
-import org.kate.examples.cars.common.domain.CarAdviceRequest
 import org.kate.repository.KateReadRepository
 import org.springframework.stereotype.Component
 

@@ -1,7 +1,7 @@
 package org.kate.examples.cars.carbonusvaluesvc.inbound
 
-import org.kate.common.KateRequest
-import org.kate.common.KateRequestReceivedCallback
+import org.kate.domain.KateRequest
+import org.kate.domain.KateRequestReceivedCallback
 import org.kate.examples.cars.carbonusvaluesvc.domain.CarBonusValueService
 import org.kate.examples.cars.carbonusvaluesvc.outbound.CarBonusValueOutHandler
 import org.kate.examples.cars.common.domain.CarBonusValueRequest

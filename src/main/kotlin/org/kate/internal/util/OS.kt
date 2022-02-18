@@ -1,4 +1,4 @@
-package org.kate.common.util
+package org.kate.internal.util
 
 import java.lang.management.ManagementFactory
 

@@ -1,8 +1,8 @@
 package org.kate.examples.cars.common.domain
 
-import org.kate.common.KateEventBody
-import org.kate.common.KateRequestBody
-import org.kate.common.KateResponseBody
+import org.kate.domain.KateEventBody
+import org.kate.domain.KateRequestBody
+import org.kate.domain.KateResponseBody
 
 data class CarAdviceRequest(
     val type: CarType, val yearBuilt: Int,  val licensePlate: String, val minimumPriceEuros: Int

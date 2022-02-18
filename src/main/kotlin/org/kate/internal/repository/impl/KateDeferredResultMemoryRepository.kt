@@ -1,4 +1,4 @@
-package org.kate.repository.impl
+package org.kate.internal.repository.impl
 
 import org.kate.repository.KateDeferredResultRepository
 import org.springframework.stereotype.Component

@@ -1,4 +1,4 @@
-package org.kate.common.inbound.kafka
+package org.kate.internal.inbound.kafka
 
 import java.lang.reflect.Method
 

@@ -1,4 +1,4 @@
-package org.kate.common
+package org.kate.domain
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.net.InetAddress

@@ -1,8 +1,8 @@
 package org.kate.examples.cars.common.monitor.inbound
 
-import org.kate.common.KateErrorMessageBody
-import org.kate.common.KateEvent
-import org.kate.common.KateEventReceivedCallback
+import org.kate.domain.KateErrorMessageBody
+import org.kate.domain.KateEvent
+import org.kate.domain.KateEventReceivedCallback
 import org.kate.examples.cars.common.domain.CarValueResponse
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

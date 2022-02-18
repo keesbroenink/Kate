@@ -1,9 +1,9 @@
 package org.kate.repository
 
-import org.kate.common.KateRequest
-import org.kate.common.KateRequestBody
-import org.kate.common.KateResponse
-import org.kate.common.KateResponseBody
+import org.kate.domain.KateRequest
+import org.kate.domain.KateRequestBody
+import org.kate.domain.KateResponse
+import org.kate.domain.KateResponseBody
 
 interface KateReadRepository {
     fun getRequest(requestId: String): KateRequest

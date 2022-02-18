@@ -1,9 +1,9 @@
 package org.kate.examples.cars.websvc.outbound
 
-import org.kate.common.KateErrorImpact
-import org.kate.common.KateRequest
-import org.kate.common.outbound.kafka.KateKafkaSender
+import org.kate.domain.KateErrorImpact
+import org.kate.domain.KateRequest
 import org.kate.examples.cars.common.domain.CarAdviceRequest
+import org.kate.outbound.KateSender
 import org.springframework.stereotype.Component
 
 interface CarOutHandler {
@@ -12,12 +12,12 @@ interface CarOutHandler {
 }
 
 @Component
-class CarOutHandlerImpl(val kateKafkaSender: KateKafkaSender) : CarOutHandler{
+class CarOutHandlerImpl(val kateSender: KateSender) : CarOutHandler{
 
     override fun submitRequestSellCarAdvice(requestId: String, requestBody : CarAdviceRequest) =
-        kateKafkaSender.sendRequestMessage( KateRequest.create(id= requestId, traceId=requestId, requestBody=requestBody))
+        kateSender.sendRequestMessage( KateRequest.create(id= requestId, traceId=requestId, requestBody=requestBody))
 
     override fun notifyTimeoutError(traceId: String, requestId: String, message: String) =
-        kateKafkaSender.sendErrorMessage(traceId, requestId, KateErrorImpact.LOW, message, "Try again")
+        kateSender.sendErrorMessage(traceId, requestId, KateErrorImpact.LOW, message, "Try again")
 
 }

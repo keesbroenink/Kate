@@ -1,8 +1,8 @@
-package org.kate.common.conversion
+package org.kate.internal.conversion
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.kate.common.*
+import org.kate.domain.*
 import java.time.Instant
 
 
@@ -76,9 +76,9 @@ data class TestRequestBody(val field1: String = "test") : KateRequestBody
 data class TestResponseBody(val field1: String = "test") : KateResponseBody
 data class TestEventBody(val field1: String = "test") : KateEventBody
 
-const val JSON_EVENT = """{"modelVersion":"1.0","id":"test-id","traceId":"trace-id","creationTimestamp":"$TIMESTAMP","eventBodyType":"org.kate.common.conversion.TestEventBody","eventBody":{"field1":"test"}}"""
-const val JSON_EVENT_WITHOUT_BODY = """{"modelVersion":"1.0","id":"test-id","traceId":"trace-id","creationTimestamp":"$TIMESTAMP","eventBodyType":"org.kate.common.conversion.TestEventBody"}"""
-const val JSON_REQUEST = """{"modelVersion":"1.0","id":"test-id","traceId":"trace-id","creationTimestamp":"$TIMESTAMP","parentRequestId":null,"replyTopic":null,"requestBodyType":"org.kate.common.conversion.TestRequestBody","requestBody":{"field1":"test"}}"""
-const val JSON_REQUEST_WITHOUT_BODY = """{"modelVersion":"1.0","id":"test-id","traceId":"trace-id","creationTimestamp":"$TIMESTAMP","parentRequestId":null,"replyTopic":null,"requestBodyType":"org.kate.common.conversion.TestRequestBody"}"""
-const val JSON_RESPONSE = """{"modelVersion":"1.0","id":"test-id","traceId":"trace-id","creationTimestamp":"$TIMESTAMP","requestId":"1-1","responseBodyType":"org.kate.common.conversion.TestResponseBody","responseBody":{"field1":"test"}}"""
-const val JSON_RESPONSE_WITHOUT_BODY = """{"modelVersion":"1.0","id":"test-id","traceId":"trace-id","creationTimestamp":"$TIMESTAMP","requestId":"1-1","responseBodyType":"org.kate.common.conversion.TestResponseBody"}"""
+const val JSON_EVENT = """{"modelVersion":"1.0","id":"test-id","traceId":"trace-id","creationTimestamp":"$TIMESTAMP","eventBodyType":"org.kate.internal.conversion.TestEventBody","eventBody":{"field1":"test"}}"""
+const val JSON_EVENT_WITHOUT_BODY = """{"modelVersion":"1.0","id":"test-id","traceId":"trace-id","creationTimestamp":"$TIMESTAMP","eventBodyType":"org.kate.internal.conversion.TestEventBody"}"""
+const val JSON_REQUEST = """{"modelVersion":"1.0","id":"test-id","traceId":"trace-id","creationTimestamp":"$TIMESTAMP","parentRequestId":null,"replyTopic":null,"requestBodyType":"org.kate.internal.conversion.TestRequestBody","requestBody":{"field1":"test"}}"""
+const val JSON_REQUEST_WITHOUT_BODY = """{"modelVersion":"1.0","id":"test-id","traceId":"trace-id","creationTimestamp":"$TIMESTAMP","parentRequestId":null,"replyTopic":null,"requestBodyType":"org.kate.internal.conversion.TestRequestBody"}"""
+const val JSON_RESPONSE = """{"modelVersion":"1.0","id":"test-id","traceId":"trace-id","creationTimestamp":"$TIMESTAMP","requestId":"1-1","responseBodyType":"org.kate.internal.conversion.TestResponseBody","responseBody":{"field1":"test"}}"""
+const val JSON_RESPONSE_WITHOUT_BODY = """{"modelVersion":"1.0","id":"test-id","traceId":"trace-id","creationTimestamp":"$TIMESTAMP","requestId":"1-1","responseBodyType":"org.kate.internal.conversion.TestResponseBody"}"""
