@@ -6,13 +6,13 @@ import org.kate.common.KateResponseReceivedCallback
 import org.kate.examples.cars.common.domain.CarAdviceResponse
 import org.kate.examples.cars.websvc.domain.CarService
 import org.springframework.stereotype.Component
-import org.kate.examples.cars.websvc.repository.WebRequestResponseRepository
+import org.kate.examples.cars.websvc.WebRequestResponseSynchronizer
 
 @Component
-class CarInHandler(val carService: CarService, val repo: WebRequestResponseRepository): KateResponseReceivedCallback<CarAdviceResponse> {
+class CarInHandler(val carService: CarService, val syncer: WebRequestResponseSynchronizer): KateResponseReceivedCallback<CarAdviceResponse> {
 
     override fun invoke(response: KateResponse, request: KateRequest){
-        repo.resolveRequest(response.requestId, response.responseBody as CarAdviceResponse)
+        syncer.synchronize(response.requestId, response.responseBody as CarAdviceResponse)
     }
 
 

@@ -1,4 +1,4 @@
-package org.kate.examples.cars.websvc.repository
+package org.kate.examples.cars.websvc
 
 import org.kate.examples.cars.common.domain.CarAdviceResponse
 import org.kate.examples.cars.websvc.outbound.CarOutHandler
@@ -9,17 +9,17 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
 import org.springframework.web.context.request.async.DeferredResult
 
-interface WebRequestResponseRepository {
+interface WebRequestResponseSynchronizer {
     fun registerRequest(traceId: String, requestId: String, timeOutMilliSeconds: Long): DeferredResult<CarAdviceResponse>
-    fun resolveRequest(requestId: String, carAdviceResponse: CarAdviceResponse)
+    fun synchronize(requestId: String, carAdviceResponse: CarAdviceResponse)
 }
 
 @Component
-class WebRequestResponseRepositoryImpl(val kateRepo: KateDeferredResultRepository<CarAdviceResponse>,
-                                       val carOutHandler: CarOutHandler
-):  WebRequestResponseRepository{
+class WebRequestResponseSynchronizerImpl(val kateRepo: KateDeferredResultRepository<CarAdviceResponse>,
+                                         val carOutHandler: CarOutHandler
+):  WebRequestResponseSynchronizer{
     companion object {
-        private val LOGGER = LoggerFactory.getLogger(WebRequestResponseRepositoryImpl::class.java)
+        private val LOGGER = LoggerFactory.getLogger(WebRequestResponseSynchronizerImpl::class.java)
     }
     override fun registerRequest(traceId: String, requestId: String, timeOutMilliSeconds: Long): DeferredResult<CarAdviceResponse> {
         val deferredResult = kateRepo.registerDeferredResult( requestId, timeOutMilliSeconds)
@@ -33,7 +33,7 @@ class WebRequestResponseRepositoryImpl(val kateRepo: KateDeferredResultRepositor
         return deferredResult.second
     }
 
-    override fun resolveRequest(requestId: String, carAdviceResponse: CarAdviceResponse) {
+    override fun synchronize(requestId: String, carAdviceResponse: CarAdviceResponse) {
         val deferredResult = kateRepo.getRemoveDeferredResult(requestId) ?: return
         if (deferredResult.second.isSetOrExpired) {
             LOGGER.warn("Within the waiting period ${deferredResult.first}ms we received no result for request $requestId")
