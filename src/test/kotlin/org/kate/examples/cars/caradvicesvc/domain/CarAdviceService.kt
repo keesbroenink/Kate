@@ -14,7 +14,7 @@ interface CarAdviceService {
 
 @Component
 class CarAdviceServiceImpl(val calculateCarAdviceService: CalculateCarAdviceService,
-                           val kateRepo: ResponseRepository,
+                           val responseRepo: ResponseRepository,
                            val carAdviceOutHandler: CarAdviceOutHandler) : CarAdviceService {
     companion object {
         val LOGGER: Logger = LoggerFactory.getLogger(CarAdviceService::class.java)
@@ -25,8 +25,8 @@ class CarAdviceServiceImpl(val calculateCarAdviceService: CalculateCarAdviceServ
     }
 
     override fun carAdviceResult(carAdviceRequestId: String, carAdviceRequestBody: CarAdviceRequest) {
-        val car = kateRepo.findCarValueResponse(carAdviceRequestId) ?: return
-        val bonus = kateRepo.findCarBonusValueResponse(carAdviceRequestId) ?: return
+        val car = responseRepo.findCarValueResponse(carAdviceRequestId) ?: return
+        val bonus = responseRepo.findCarBonusValueResponse(carAdviceRequestId) ?: return
 
         val result = calculateCarAdviceService.calculateCarAdvice(car.euros, bonus.euros, carAdviceRequestBody.minimumPriceEuros)
         LOGGER.info("Give advice $result for request $carAdviceRequestBody")
