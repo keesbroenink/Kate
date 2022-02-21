@@ -23,8 +23,3 @@ kate.consumer.event.enabled    : true
 kate.consumer.event-topics     : ${kate.default-event-topic}
 kate.consumer.event-group-id   : kate-event-consumer
 
-#could be any SQL database
-spring.datasource.url: jdbc:h2:mem:testdb
-spring.datasource.driverClassName: org.h2.Driver
-spring.datasource.username: sa
-spring.jpa.hibernate.ddl-auto: create
