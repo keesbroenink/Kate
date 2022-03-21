@@ -1,6 +1,8 @@
 package org.kate.examples.cars.websvc
 
 import org.kate.examples.cars.common.domain.CarAdviceResponse
+import org.kate.examples.cars.websvc.in_outbound.ChatHandler
+import org.kate.examples.cars.websvc.in_outbound.Message
 import org.kate.examples.cars.websvc.outbound.CarOutHandler
 import org.kate.repository.KateDeferredResultRepository
 import org.slf4j.LoggerFactory
@@ -16,7 +18,8 @@ interface WebRequestResponseSynchronizer {
 
 @Component
 class WebRequestResponseSynchronizerImpl(val kateRepo: KateDeferredResultRepository<CarAdviceResponse>,
-                                         val carOutHandler: CarOutHandler
+                                         val carOutHandler: CarOutHandler,
+                                         val chatHandler: ChatHandler
 ):  WebRequestResponseSynchronizer{
     companion object {
         private val LOGGER = LoggerFactory.getLogger(WebRequestResponseSynchronizerImpl::class.java)
@@ -34,11 +37,16 @@ class WebRequestResponseSynchronizerImpl(val kateRepo: KateDeferredResultReposit
     }
 
     override fun synchronize(requestId: String, carAdviceResponse: CarAdviceResponse) {
+        showcaseWebsocketChat(carAdviceResponse)
         val deferredResult = kateRepo.getRemoveDeferredResult(requestId) ?: return
         if (deferredResult.second.isSetOrExpired) {
             LOGGER.warn("Within the waiting period ${deferredResult.first}ms we received no result for request $requestId")
         } else {
             deferredResult.second.setResult(carAdviceResponse)
         }
+    }
+
+    private fun showcaseWebsocketChat(carAdviceResponse: CarAdviceResponse) {
+        chatHandler.broadcast(Message(msgType = "say", data = carAdviceResponse.toString()))
     }
 }

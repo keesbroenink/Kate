@@ -76,6 +76,7 @@ dependencies {
 
     testImplementation("org.springdoc:springdoc-openapi-ui:1.5.12")
     testImplementation("org.springdoc:springdoc-openapi-kotlin:1.5.12")
+    testImplementation("org.springframework.boot:spring-boot-starter-websocket")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
