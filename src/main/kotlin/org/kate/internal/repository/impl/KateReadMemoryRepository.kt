@@ -8,12 +8,16 @@ import org.kate.internal.conversion.convertJsonToKateRequest
 import org.kate.internal.conversion.convertJsonToKateResponse
 import org.kate.internal.repository.KatePrivateReadRepository
 import org.kate.repository.KateReadRepository
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Suppress("UNCHECKED_CAST")
 @Component
 class KateReadMemoryRepository(private val katePrivateRepository: KatePrivateReadRepository) : KateReadRepository{
-
+    companion object {
+        val LOGGER: Logger = LoggerFactory.getLogger(KateReadMemoryRepository::class.java)
+    }
     override fun getRequest(requestId: String): KateRequest {
         val requestJson = katePrivateRepository.getRequestJson(requestId)
         return convertJsonToKateRequest(requestJson)
@@ -48,6 +52,7 @@ class KateReadMemoryRepository(private val katePrivateRepository: KatePrivateRea
     override fun <T: KateResponseBody> findFirstResponseBodyByParentRequestId(parentRequestId: String, requiredClass: Class<T>): T? {
         for (kateResponse in getResponsesByParentRequestId(parentRequestId)) {
             if (kateResponse.responseBody != null && kateResponse.responseBody!!::class.java == requiredClass) {
+                LOGGER.debug("findFirstResponseBodyByParentRequestId $requiredClass found for parentId $parentRequestId")
                 return kateResponse.responseBody as T
             }
         }

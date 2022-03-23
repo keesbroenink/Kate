@@ -1,4 +1,4 @@
-package org.kate.examples.cars.websvc.inbound
+package org.kate.examples.cars.websvc.in_outbound
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag

@@ -33,7 +33,6 @@ class KateKafkaSender(private val kafkaTemplate: KafkaTemplate<String, String>,
      */
     override fun sendReply(kateRequest: KateRequest, responseObject: KateResponse) {
         if (kateRequest.replyTopic == null) throw IllegalArgumentException("The request's field replyTopic is not defined")
-        repository.saveKateResponseByRequestId(kateRequest, responseObject)
         kafkaTemplate.send( kateRequest.replyTopic, responseObject.traceId, convertKateResponseToJson(responseObject))
     }
 
@@ -42,7 +41,6 @@ class KateKafkaSender(private val kafkaTemplate: KafkaTemplate<String, String>,
      */
     override fun sendResponseMessage(kateRequest: KateRequest, kateResponse: KateResponse, topic: String? ) {
         val myTopic = topic ?: kateInitialization.producerResponseTopic
-        repository.saveKateResponseByRequestId(kateRequest, kateResponse)
         kafkaTemplate.send( myTopic, kateResponse.traceId, convertKateResponseToJson(kateResponse))
     }
 

@@ -22,3 +22,5 @@ kate.default-event-topic    : CarsBulletinBoardEvents
 kate.default-error-topic    : CarsBulletinBoardErrors
 #let's listen to errors
 kate.consumer.event-topics: ${kate.default-event-topic}, ${kate.default-error-topic}
+
+logging.level.org.kate: DEBUG

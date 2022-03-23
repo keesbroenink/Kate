@@ -12,13 +12,13 @@ import org.kate.internal.repository.KatePrivateWriteRepository
 import org.kate.internal.repository.ObjectType
 import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.CopyOnWriteArraySet
 
 @Component
 class KatePrivateMemoryRepository() : KatePrivateWriteRepository, KatePrivateReadRepository {
     private val kateObjectMap = ConcurrentHashMap<String, String>()
     private val kateResponseMap = ConcurrentHashMap<String, String>()
-    private val kateResponseByParentRequestMap = ConcurrentHashMap<String, MutableList<String>>()
+    private val kateResponseByParentRequestMap = ConcurrentHashMap<String, MutableSet<String>>()
 
     override fun saveKateEvent(event: KateEvent) {
         kateObjectMap[event.id] = convertKateEventToJson(event)
@@ -31,7 +31,7 @@ class KatePrivateMemoryRepository() : KatePrivateWriteRepository, KatePrivateRea
     override fun saveKateResponseByRequestId(request: KateRequest, response: KateResponse) {
         kateResponseMap[request.id] = convertKateResponseToJson(response)
         if (request.parentRequestId != null) {
-            val jsonList = kateResponseByParentRequestMap[request.parentRequestId] ?: CopyOnWriteArrayList()
+            val jsonList = kateResponseByParentRequestMap[request.parentRequestId] ?: CopyOnWriteArraySet()
             jsonList.add(kateResponseMap[request.id]!!)
             kateResponseByParentRequestMap[request.parentRequestId] = jsonList
         }
@@ -40,6 +40,6 @@ class KatePrivateMemoryRepository() : KatePrivateWriteRepository, KatePrivateRea
     override fun getRequestJson(requestId: String)  = kateObjectMap[requestId] ?: throw KateObjectNotFoundException(requestId, ObjectType.REQUEST)
     override fun getEventJson(eventId: String)      = kateObjectMap[eventId] ?: throw KateObjectNotFoundException(eventId, ObjectType.EVENT)
     override fun getResponseJson(requestId: String) = kateResponseMap[requestId] ?: throw KateObjectNotFoundException(requestId, ObjectType.RESPONSE_FOR_REQUEST)
-    override fun getResponsesParentRequestIdJson(parentRequestId: String) = kateResponseByParentRequestMap[parentRequestId] ?: listOf()
+    override fun getResponsesParentRequestIdJson(parentRequestId: String) = kateResponseByParentRequestMap[parentRequestId] ?: setOf()
 
 }
